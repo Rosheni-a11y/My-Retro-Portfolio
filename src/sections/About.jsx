@@ -1,7 +1,14 @@
+import { useState } from 'react'
 import { about } from '../data'
 import PixelIcon from '../components/PixelIcon'
 
-export default function About() {
+export default function About({ onOpenSection }) {
+  const [imgFailed, setImgFailed] = useState(false)
+  const showPhoto = about.photo && !imgFailed
+  // bio is one string; the "(boring professional version…)" line is split off into a hint
+  const [bioMain, ...bioRest] = about.bio.split(/\n\n+/)
+  const bioHint = bioRest.join(' ').replace(/^\(|\)\s*$/g, '').trim()
+
   return (
     <div className="section">
       <div className="sec-head">
@@ -11,14 +18,39 @@ export default function About() {
       </div>
 
       <div className="about-top">
-        <div className="about-avatar" aria-hidden="true">👩‍💻</div>
+        <div className="about-avatar">
+          {showPhoto ? (
+            <img
+              className="about-photo"
+              src={about.photo}
+              alt={about.name}
+              onError={() => setImgFailed(true)}
+            />
+          ) : (
+            <span aria-hidden="true">👩‍💻</span>
+          )}
+        </div>
         <div>
           <h3 className="about-name">{about.name}</h3>
           <p className="about-title">{about.title}</p>
         </div>
       </div>
 
-      <p className="about-bio">{about.bio}</p>
+      {about.tagline && (
+        <p className="about-tagline">
+          <span className="spark" aria-hidden="true">✦</span> {about.tagline}
+        </p>
+      )}
+
+      <p className="about-bio">{bioMain}</p>
+
+      {bioHint && (
+        <button className="about-hint" onClick={() => onOpenSection?.('resume')}>
+          <PixelIcon name="resume" size={20} />
+          <span>{bioHint}</span>
+          <span className="about-hint-go" aria-hidden="true">→</span>
+        </button>
+      )}
 
       <div className="tag-row">
         {about.tags.map((t) => (

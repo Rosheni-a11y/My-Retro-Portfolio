@@ -1,15 +1,32 @@
+import { useEffect, useRef, useState } from 'react'
 import { profile } from '../data'
 import { SECTIONS } from '../sections'
 import PixelIcon from './PixelIcon'
+import Popup from './Popup'
 
-const MENU = [
-  { icon: '📂', label: 'File' },
-  { icon: '🔍', label: 'View' },
-  { icon: '🗺️', label: 'Hunt' },
-  { icon: '❓', label: 'Help' },
-]
+export default function Hub({ onOpen, onHome, onCycleTheme }) {
+  const huntRef = useRef(null)
+  const litTimer = useRef(null)
+  const [helpOpen, setHelpOpen] = useState(false)
+  const [lit, setLit] = useState(false)
 
-export default function Hub({ onOpen }) {
+  useEffect(() => () => clearTimeout(litTimer.current), [])
+
+  // scroll down to the grid and spotlight the Resume treasure
+  const huntForTreasure = () => {
+    huntRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    setLit(true)
+    clearTimeout(litTimer.current)
+    litTimer.current = setTimeout(() => setLit(false), 2200)
+  }
+
+  const MENU = [
+    { icon: '⏻', label: 'Respawn', onClick: onHome },
+    { icon: '🎨', label: 'Vibes', onClick: onCycleTheme },
+    { icon: '🗺️', label: 'Hunt', onClick: huntForTreasure },
+    { icon: '🧭', label: 'Clues', onClick: () => setHelpOpen(true) },
+  ]
+
   return (
     <main className="hub">
      <div className="hub-inner">
@@ -48,18 +65,22 @@ export default function Hub({ onOpen }) {
       </section>
 
       {/* treasure grid container with retro menu bar */}
-      <section className="hunt-frame">
+      <section className="hunt-frame" ref={huntRef}>
         <div className="menu-bar">
           {MENU.map((m) => (
-            <span key={m.label} className="menu-item">
+            <button key={m.label} className="menu-item" onClick={m.onClick}>
               <span aria-hidden="true">{m.icon}</span> {m.label}
-            </span>
+            </button>
           ))}
         </div>
 
         <div className="treasure-grid">
           {SECTIONS.map((s) => (
-            <button key={s.id} className="treasure" onClick={() => onOpen(s.id)}>
+            <button
+              key={s.id}
+              className={`treasure${s.id === 'resume' && lit ? ' lit' : ''}`}
+              onClick={() => onOpen(s.id)}
+            >
               <span className="t-icon">
                 <PixelIcon name={s.icon} size={48} />
               </span>
@@ -73,6 +94,27 @@ export default function Hub({ onOpen }) {
         <span>✦</span> press ESC to close a treasure · made with pixels &amp; curiosity <span>✦</span>
       </footer>
      </div>
+
+      {helpOpen && (
+        <Popup title="Clues" icon="sparkle" onClose={() => setHelpOpen(false)}>
+          <div className="section">
+            <div className="sec-head">
+              <PixelIcon name="sparkle" size={30} />
+              <h2>How to Hunt</h2>
+              <span className="spark">✦</span>
+            </div>
+            <p className="sec-intro">Lost, explorer? Here are your clues for navigating RosheniOS 95.</p>
+            <ul className="help-list">
+              <li><b>Click a treasure</b> in the grid to open it.</li>
+              <li>Press <b>ESC</b> (or the ✕) to close any window.</li>
+              <li><b>⏻ Respawn</b> — reboot back to the start screen.</li>
+              <li><b>🎨 Vibes</b> — shuffle the whole site's color theme.</li>
+              <li><b>🗺️ Hunt</b> — jump to the grid &amp; spotlight the Resume treasure.</li>
+              <li><b>🧭 Clues</b> — open this guide anytime.</li>
+            </ul>
+          </div>
+        </Popup>
+      )}
     </main>
   )
 }

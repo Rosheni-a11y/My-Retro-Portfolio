@@ -4,10 +4,12 @@ import PixelIcon from './PixelIcon'
 // Each line types out char-by-char. `tail` renders after the typed `text`
 // (used for the coloured ✓ checks / values so the cursor lands cleanly).
 const LINES = [
-  { text: '> BIOS v4.20 — Rosheni Industries™', plum: true },
-  { text: '> Detecting hardware...', tail: ' ✓ Keyboard ✓ Mouse ✓ Talent', ok: true },
+  { text: '> RosheniOS BIOS v4.20 — Neural Core Edition™', plum: true },
+  { text: '> Power-on self test...', tail: ' ✓ CPU ✓ GPU ✓ Caffeine', ok: true },
+  { text: '> import numpy, torch, cv2...', tail: ' modules loaded', ok: true },
   { text: '> Mounting C:\\PROJECTS...', tail: ' 6 treasures found', ok: true },
-  { text: '> Initializing neural networks...', tail: ' R² = 0.98', ok: true },
+  { text: '> model.fit(dataset=curiosity)...', tail: ' loss 0.0042 · acc 99%', ok: true },
+  { text: '> Compiling dreams.py...', tail: ' build passed', ok: true },
   { text: '> Welcome to RosheniOS 95 ✦', plum: true },
 ]
 
@@ -61,7 +63,7 @@ export default function BootScreen({ onStart }) {
 
       {finished && (
         <button className="hunt-start" onClick={onStart} autoFocus>
-          🗺️ Start Treasure Hunt ✦
+          Start Treasure Hunt ✦
         </button>
       )}
     </div>
