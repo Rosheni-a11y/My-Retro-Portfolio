@@ -3,32 +3,55 @@ import PixelIcon from '../components/PixelIcon'
 
 export default function Education() {
   return (
-    <div>
+    <div className="section">
       <div className="sec-head">
-        <PixelIcon name="education" size={28} />
+        <PixelIcon name="education" size={30} />
         <h2>Quest Log</h2>
         <span className="spark">✦</span>
       </div>
-      <p className="muted" style={{ marginBottom: 18, fontSize: 15 }}>
-        The journey so far — completed quests &amp; the one still in progress.
-      </p>
+      <p className="sec-intro">The journey so far — active quests &amp; completed chapters 📖</p>
 
       <div className="quest-log">
         {education.map((e) => (
           <div className={`quest ${e.status}`} key={e.id}>
             <div className="quest-rail">
-              <div className="quest-node">{e.status === 'active' ? '⚔' : '✓'}</div>
+              <span className={`quest-dot ${e.status}`} aria-hidden="true" />
             </div>
+
             <div className="quest-card">
-              <h4>
-                {e.title}
+              <div className="quest-top">
                 <span className="year-pill">{e.year}</span>
                 <span className={`quest-status ${e.status}`}>
-                  {e.status === 'active' ? 'IN PROGRESS' : 'COMPLETE'}
+                  {e.status === 'active' ? 'ACTIVE' : 'COMPLETE'}
                 </span>
-              </h4>
-              <div className="place">{e.place}</div>
-              <p className="desc">{e.desc}</p>
+              </div>
+
+              <h4 className="quest-title">{e.title}</h4>
+              <p className="quest-place">{e.place}</p>
+              <p className="quest-meta">
+                <span>🗓 {e.period}</span>
+                {e.gpa && <span className="quest-gpa">⭐ GPA: {e.gpa}</span>}
+              </p>
+
+              {e.coursework && (
+                <div className="quest-block">
+                  <h5 className="quest-sublabel">Relevant Coursework</h5>
+                  <div className="course-tags">
+                    {e.coursework.map((c) => (
+                      <span key={c} className="course-tag">{c}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="quest-block">
+                <h5 className="quest-sublabel">{e.activitiesLabel}</h5>
+                <ul className="activity-list">
+                  {e.activities.map((a) => (
+                    <li key={a}>⚑ {a}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         ))}

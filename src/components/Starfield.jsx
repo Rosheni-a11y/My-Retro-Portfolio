@@ -7,7 +7,8 @@ export default function Starfield({ count = 90 }) {
     const out = []
     for (let i = 0; i < count; i++) {
       const size = Math.random() * 2 + 1 // 1–3px
-      const isPlum = Math.random() < 0.4
+      const roll = Math.random()
+      const color = roll < 0.32 ? 'var(--plum)' : roll < 0.5 ? 'var(--teal)' : '#f0f0f0'
       const drifts = Math.random() < 0.25
       out.push({
         id: i,
@@ -15,7 +16,7 @@ export default function Starfield({ count = 90 }) {
         top: Math.random() * 100,
         size,
         drifts,
-        color: isPlum ? 'var(--plum)' : '#f0f0f0',
+        color,
         dur: (Math.random() * 3 + 2).toFixed(2), // twinkle 2–5s
         delay: (Math.random() * 5).toFixed(2),
         drift: (Math.random() * 30 + 30).toFixed(0), // drift 30–60s

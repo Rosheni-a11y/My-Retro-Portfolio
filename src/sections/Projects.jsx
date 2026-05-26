@@ -1,42 +1,30 @@
 import { projects } from '../data'
 import PixelIcon from '../components/PixelIcon'
 
-export default function Projects() {
+export default function Projects({ onOpenProject }) {
   return (
-    <div>
+    <div className="section">
       <div className="sec-head">
-        <PixelIcon name="projects" size={28} />
+        <PixelIcon name="projects" size={30} />
         <h2>Projects</h2>
         <span className="spark">✦</span>
       </div>
+      <p className="sec-intro">A chest of builds — click a treasure to open it ✦</p>
 
-      <div className="proj-grid">
+      <ul className="proj-list">
         {projects.map((p) => (
-          <article
-            key={p.id}
-            className="proj-card"
-            style={{ '--card-accent': p.accent }}
-          >
-            <div className="proj-top">
-              <div className="proj-iconbox">
-                <PixelIcon name={p.icon} size={32} />
-              </div>
-              <h3>{p.name}</h3>
-            </div>
-            <p className="blurb">{p.blurb}</p>
-            <div className="proj-tech">
-              {p.tech.map((t) => (
-                <span className="chip" key={t}>
-                  {t}
-                </span>
-              ))}
-            </div>
-            <a className="proj-link" href={p.link} target="_blank" rel="noreferrer">
-              View quest →
-            </a>
-          </article>
+          <li key={p.id}>
+            <button className="proj-row" onClick={() => onOpenProject?.(p.id)}>
+              <span className="proj-gem">
+                <PixelIcon name="projects" size={26} />
+              </span>
+              <span className="proj-name">{p.name}</span>
+              {p.status && <span className="proj-status">{p.status}</span>}
+              <span className="proj-open" aria-hidden="true">↗</span>
+            </button>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   )
 }

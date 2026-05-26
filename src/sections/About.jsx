@@ -1,61 +1,46 @@
-import { useEffect, useState } from 'react'
-import { profile } from '../data'
+import { about } from '../data'
 import PixelIcon from '../components/PixelIcon'
 
 export default function About() {
-  const [xp, setXp] = useState(0)
-  useEffect(() => {
-    const t = setTimeout(() => setXp(profile.xp), 120)
-    return () => clearTimeout(t)
-  }, [])
-
   return (
-    <div>
+    <div className="section">
       <div className="sec-head">
-        <PixelIcon name="about" size={28} />
+        <PixelIcon name="about" size={30} />
         <h2>About Me</h2>
         <span className="spark">✦</span>
       </div>
 
-      <div className="about-grid">
-        <div className="avatar-wrap">
-          <div className="avatar-frame">
-            <PixelIcon name="about" size={120} />
-          </div>
-          <span className="lvl-badge">★ Level {profile.level}</span>
-        </div>
-
+      <div className="about-top">
+        <div className="about-avatar" aria-hidden="true">👩‍💻</div>
         <div>
-          <h1 className="about-name">{profile.name}</h1>
-          <div className="about-title">
-            <PixelIcon name="sparkle" size={14} />
-            {profile.title}
-          </div>
-          <p className="about-bio">{profile.bio}</p>
-
-          <div className="tag-row">
-            {profile.tags.map((t) => (
-              <span className="tag" key={t}>
-                <span className="spark">✦</span>
-                {t}
-              </span>
-            ))}
-          </div>
-
-          <div className="xp-line">
-            <div className="xp-meta">
-              <span>EXP to Level {profile.level + 1}</span>
-              <span>{profile.xp} / 100</span>
-            </div>
-            <div className="xp-track">
-              <div
-                className="xp-fill"
-                style={{ width: `${xp}%`, background: 'linear-gradient(90deg, var(--plum-deep), var(--plum), var(--plum-bright))' }}
-              />
-            </div>
-          </div>
+          <h3 className="about-name">{about.name}</h3>
+          <p className="about-title">{about.title}</p>
         </div>
       </div>
+
+      <p className="about-bio">{about.bio}</p>
+
+      <div className="tag-row">
+        {about.tags.map((t) => (
+          <span key={t} className="tag">✦ {t}</span>
+        ))}
+      </div>
+
+      <ul className="info-list">
+        {about.info.map((row) => (
+          <li key={row.label} className="info-row">
+            <span className="info-icon" aria-hidden="true">{row.icon}</span>
+            <span className="info-label">{row.label}</span>
+            {row.link ? (
+              <a className="info-value" href={row.link} target="_blank" rel="noreferrer">
+                {row.value}
+              </a>
+            ) : (
+              <span className="info-value">{row.value}</span>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

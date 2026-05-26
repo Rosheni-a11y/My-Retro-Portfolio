@@ -1,26 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 import PixelIcon from './PixelIcon'
 
+// Each line types out char-by-char. `tail` renders after the typed `text`
+// (used for the coloured ✓ checks / values so the cursor lands cleanly).
 const LINES = [
-  { text: 'RosheniOS  [Version 9.8.7 — Cozy Edition]', plum: true },
-  { text: '(c) 2026 cozy systems inc.  all hearts reserved.' },
-  { text: '' },
-  { text: 'Booting kernel.....................', ok: true },
-  { text: 'Mounting /dev/sparkles.............', ok: true },
-  { text: 'Loading pixel art..................', ok: true },
-  { text: 'Brewing coffee.....................', ok: true },
-  { text: 'Summoning good vibes...............', ok: true },
-  { text: '' },
-  { text: 'Welcome back. Starting desktop ✦', plum: true },
+  { text: '> BIOS v4.20 — Rosheni Industries™', plum: true },
+  { text: '> Detecting hardware...', tail: ' ✓ Keyboard ✓ Mouse ✓ Talent', ok: true },
+  { text: '> Mounting C:\\PROJECTS...', tail: ' 6 treasures found', ok: true },
+  { text: '> Initializing neural networks...', tail: ' R² = 0.98', ok: true },
+  { text: '> Welcome to RosheniOS 95 ✦', plum: true },
 ]
 
-const TOTAL_CHARS = LINES.reduce((n, l) => n + l.text.length, 0)
-const SPEED = 14 // ms per character
+const SPEED = 22 // ms per character
 
-export default function BootScreen({ onDone }) {
+export default function BootScreen({ onStart }) {
   const [li, setLi] = useState(0) // current line index
   const [ci, setCi] = useState(0) // char index within current line
-  const [leaving, setLeaving] = useState(false)
   const finished = li >= LINES.length
   const timer = useRef(null)
 
@@ -31,67 +26,44 @@ export default function BootScreen({ onDone }) {
     if (ci < line.text.length) {
       timer.current = setTimeout(() => setCi((c) => c + 1), SPEED)
     } else {
-      // pause briefly at end of line, then advance
       timer.current = setTimeout(() => {
         setLi((l) => l + 1)
         setCi(0)
-      }, line.text ? 130 : 60)
+      }, 220)
     }
     return () => clearTimeout(timer.current)
   }, [li, ci, finished])
 
-  // once typing is done, hold a beat then fade out
-  useEffect(() => {
-    if (!finished) return
-    const t1 = setTimeout(() => setLeaving(true), 700)
-    const t2 = setTimeout(() => onDone(), 1300)
-    return () => {
-      clearTimeout(t1)
-      clearTimeout(t2)
-    }
-  }, [finished, onDone])
-
-  function skip() {
-    if (leaving) return
-    setLeaving(true)
-    setTimeout(() => onDone(), 500)
-  }
-
-  // progress: typed chars / total
-  const typed = LINES.slice(0, li).reduce((n, l) => n + l.text.length, 0) + ci
-  const pct = Math.min(100, Math.round((typed / TOTAL_CHARS) * 100))
-
   return (
-    <div
-      className={`boot${leaving ? ' leaving' : ''}`}
-      onClick={skip}
-      onKeyDown={skip}
-      tabIndex={0}
-      role="button"
-      aria-label="Boot screen, click to skip"
-    >
+    <div className="boot" role="region" aria-label="Boot sequence">
       <div className="boot-logo">
         <PixelIcon name="computer" size={48} />
-        rosheni.exe
+        RosheniOS 95
       </div>
 
-      {LINES.map((line, i) => {
-        if (i > li) return null
-        const shown = i < li ? line.text : line.text.slice(0, ci)
-        const lineDone = i < li
-        return (
-          <div key={i} className={`boot-line${line.plum ? ' plum' : ''}`}>
-            {shown}
-            {lineDone && line.ok ? <span className="ok">  [ OK ]</span> : null}
-            {i === li && !finished ? <span className="boot-cursor" /> : null}
-          </div>
-        )
-      })}
-
-      <div className="boot-bar" aria-hidden="true">
-        <i style={{ width: `${pct}%` }} />
+      <div className="boot-term">
+        {LINES.map((line, i) => {
+          if (i > li) return null
+          const typing = i === li && !finished
+          const shown = i < li ? line.text : line.text.slice(0, ci)
+          const doneTyping = i < li
+          return (
+            <div key={i} className={`boot-line${line.plum ? ' plum' : ''}`}>
+              {shown}
+              {doneTyping && line.tail ? (
+                <span className={line.ok ? 'ok' : ''}>{line.tail}</span>
+              ) : null}
+              {typing ? <span className="boot-cursor" /> : null}
+            </div>
+          )
+        })}
       </div>
-      <div className="boot-hint">{finished ? 'ready ✦' : 'click anywhere to skip'}</div>
+
+      {finished && (
+        <button className="hunt-start" onClick={onStart} autoFocus>
+          🗺️ Start Treasure Hunt ✦
+        </button>
+      )}
     </div>
   )
 }

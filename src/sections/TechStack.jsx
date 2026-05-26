@@ -10,25 +10,26 @@ export default function TechStack() {
   }, [])
 
   return (
-    <div>
+    <div className="section">
       <div className="sec-head">
-        <PixelIcon name="tech" size={28} />
+        <PixelIcon name="tech" size={30} />
         <h2>Tech Stack</h2>
         <span className="spark">✦</span>
       </div>
-      <p className="muted" style={{ marginBottom: 16, fontSize: 15 }}>
-        Skills leveled up through many quests. EXP bars fill as you train ⚔️
-      </p>
+      <p className="sec-intro">Skills leveled up through many quests — XP bars fill as you train ⚔️</p>
 
       <div className="skill-list">
         {skills.map((s) => (
           <div className="skill" key={s.name}>
             <div className="skill-meta">
               <span className="nm">
-                <span style={{ width: 10, height: 10, borderRadius: 2, background: s.color, display: 'inline-block', boxShadow: `0 0 6px ${s.color}` }} />
+                <span
+                  className="skill-dot"
+                  style={{ background: s.color, boxShadow: `0 0 6px ${s.color}` }}
+                />
                 {s.name}
               </span>
-              <span className="lv">Lv {Math.round(s.level / 10)} · {s.level}%</span>
+              <span className="lv" style={{ color: s.color }}>{s.level}%</span>
             </div>
             <div className="xp-track">
               <div
