@@ -233,4 +233,4 @@ export const contact = [
 ]
 
 // ---- RESUME ---- (file lives in /public)
-export const resumeUrl = '/Rosheni%20Bolonne_CV.pdf'
+export const resumeUrl = '/ROSHENI_BOLONNE_CV.pdf'
